@@ -18,6 +18,29 @@ Abre `cmd` o `PowerShell` y ejecuta:
 git clone https://github.com/JK897933/Control-Difuso-Velocidad-Motor-DC-MATLAB-Simulink-Arduino.git
 ```
 
+### ¿Dónde tengo que poner las cosas para que el `.bat` jale todo?
+El archivo `INSTALAR_Y_EJECUTAR_TODO_CMD.bat` usa rutas relativas automáticas (`%~dp0`), así que **puedes poner la carpeta en cualquier lugar de la PC** (en el `Escritorio`, en `Documentos`, en `C:\ControlDifuso\` o en una memoria USB), **siempre y cuando todos los archivos del repositorio estén juntos dentro de esa misma carpeta**:
+
+```text
+📁 Control-Difuso-Velocidad-Motor-DC/   <-- (Puedes poner esta carpeta en Escritorio, Documentos, C:\, etc.)
+ ├── ⚙️ INSTALAR_Y_EJECUTAR_TODO_CMD.bat          <-- ¡A ESTE LE DAS DOBLE CLIC!
+ ├── 📄 iniciar_todo_matlab_arduino.m
+ ├── 📄 generar_proyecto_fuzzy_motor.m
+ ├── 📄 conectar_arduino_matlab_fuzzy.m
+ ├── 📄 ControlDifusoMotorDC.fis
+ ├── 📄 Simulink_1_Motor_Sin_Control.slx
+ ├── 📄 Simulink_2_Motor_Con_Control.slx
+ ├── 📄 Simulink_3_Control_Difuso_Motor_Arduino.slx
+ └── 📁 Arduino_Control_Difuso_MotorDC/           <-- (Esta subcarpeta debe quedarse ahí adentro)
+      ├── 📄 Arduino_Control_Difuso_MotorDC.ino
+      └── 📁 build/
+           └── 📄 Arduino_Control_Difuso_MotorDC.ino.hex
+```
+
+1. **Descomprimir todo el `.zip`:** Si lo bajaste como `.zip` de GitHub, dale **Clic derecho $\rightarrow$ Extraer todo...** (no abras el `.bat` desde adentro del `.zip` sin extraerlo, ni saques el `.bat` suelto fuera de la carpeta).
+2. **Conectar el Arduino UNO por USB:** Enchufa el Arduino UNO al puerto USB antes de correr el `.bat` para que le suba el programa automáticamente.
+3. **Ejecutar el `.bat`:** Dale **doble clic a `INSTALAR_Y_EJECUTAR_TODO_CMD.bat`** (o *Clic derecho $\rightarrow$ Ejecutar como administrador*).
+
 ---
 
 ## PARTE 2: Librerías Requeridas e Instalación Automática por CMD (`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`)

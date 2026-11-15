@@ -12,18 +12,43 @@
 
 ---
 
-## 1. Estructura del Repositorio
+## 1. Estructura del Repositorio y Dónde Colocar los Archivos para que el `.bat` Funcione
 
-1. **Instalador y Lanzador de 1 Clic por CMD (`.bat`):** [`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`](INSTALAR_Y_EJECUTAR_TODO_CMD.bat) *(Instala `arduino-cli`, el núcleo `arduino:avr`, las librerías `Encoder`/`PID`/`QuickPID` por CMD, compila/sube el código al Arduino UNO y abre MATLAB con los 3 modelos de Simulink)*.
+1. **Instalador y Lanzador de 1 Clic por CMD (`.bat`):** [`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`](INSTALAR_Y_EJECUTAR_TODO_CMD.bat) *(Instala `arduino-cli`, el núcleo `arduino:avr`, las librerías `Encoder`/`PID`/`QuickPID` por CMD, compila/sube el código al Arduino UNO y abre MATLAB R2023a con los 3 modelos de Simulink)*.
 2. **Lanzador Interactivo de MATLAB + Arduino:** [`iniciar_todo_matlab_arduino.m`](iniciar_todo_matlab_arduino.m)
 3. **Manual para cualquier PC sin Antigravity:** [`MANUAL_USO_PC_SIN_ANTIGRAVITY.md`](MANUAL_USO_PC_SIN_ANTIGRAVITY.md)
 4. **Sistema de Inferencia Difusa (`.fis`):** `ControlDifusoMotorDC.fis`
-5. **Simulink 1 (Motor Sin Control / Lazo Abierto):** `Simulink_1_Motor_Sin_Control.slx`
-6. **Simulink 2 (Motor Con Control Proporcional LGR Continuo y Discreto ZOH):** `Simulink_2_Motor_Con_Control.slx`
-7. **Simulink 3 (Control Difuso Mamdani + Planta del Motor + Interfaz Arduino):** `Simulink_3_Control_Difuso_Motor_Arduino.slx`
+5. **Simulink 1 (Motor Sin Control / Lazo Abierto - Compatible R2023a):** `Simulink_1_Motor_Sin_Control.slx`
+6. **Simulink 2 (Motor Con Control Proporcional LGR Continuo y Discreto ZOH - Compatible R2023a):** `Simulink_2_Motor_Con_Control.slx`
+7. **Simulink 3 (Control Difuso Mamdani + Planta del Motor + Interfaz Arduino - Compatible R2023a):** `Simulink_3_Control_Difuso_Motor_Arduino.slx`
 8. **Script Maestro de MATLAB (Generador y Simulador):** `generar_proyecto_fuzzy_motor.m`
 9. **Script de Conexión en Vivo MATLAB $\leftrightarrow$ Arduino UNO:** `conectar_arduino_matlab_fuzzy.m`
 10. **Código para el Arduino UNO (`.ino`) y Binarios Precompilados (`.hex`):** `Arduino_Control_Difuso_MotorDC/Arduino_Control_Difuso_MotorDC.ino` y `Arduino_Control_Difuso_MotorDC/build/`
+
+### ¿Dónde tengo que poner las cosas para que `INSTALAR_Y_EJECUTAR_TODO_CMD.bat` jale todo?
+
+El archivo `INSTALAR_Y_EJECUTAR_TODO_CMD.bat` utiliza rutas automáticas relativas (`%~dp0`), por lo que **puedes colocar la carpeta en cualquier lugar de la PC** (en el `Escritorio`, en `Documentos`, en `C:\ControlDifuso\` o en una memoria USB), **siempre y cuando todos los archivos del repositorio permanezcan juntos dentro de esa misma carpeta**:
+
+```text
+📁 Control-Difuso-Velocidad-Motor-DC/   <-- (Puedes poner esta carpeta en Escritorio, Documentos, C:\, etc.)
+ ├── ⚙️ INSTALAR_Y_EJECUTAR_TODO_CMD.bat          <-- ¡A ESTE LE DAS DOBLE CLIC!
+ ├── 📄 iniciar_todo_matlab_arduino.m
+ ├── 📄 generar_proyecto_fuzzy_motor.m
+ ├── 📄 conectar_arduino_matlab_fuzzy.m
+ ├── 📄 ControlDifusoMotorDC.fis
+ ├── 📄 Simulink_1_Motor_Sin_Control.slx
+ ├── 📄 Simulink_2_Motor_Con_Control.slx
+ ├── 📄 Simulink_3_Control_Difuso_Motor_Arduino.slx
+ └── 📁 Arduino_Control_Difuso_MotorDC/           <-- (Esta subcarpeta debe quedarse ahí adentro)
+      ├── 📄 Arduino_Control_Difuso_MotorDC.ino
+      └── 📁 build/
+           └── 📄 Arduino_Control_Difuso_MotorDC.ino.hex
+```
+
+#### Pasos rápidos para correr el `.bat` en cualquier otra PC:
+1. **Extraer el ZIP completo:** Si descargaste el repositorio desde GitHub como `.zip`, dale **Clic derecho $\rightarrow$ Extraer todo...** (no ejecutes el `.bat` desde adentro del `.zip` sin descomprimirlo, ni saques el `.bat` suelto fuera de la carpeta).
+2. **Conectar el Arduino UNO por USB:** Enchufa el cable USB del Arduino UNO a la PC antes de correr el `.bat` para que detecte el puerto `COM` y suba el código `.ino`/`.hex` automáticamente.
+3. **Ejecutar el `.bat`:** Dale **doble clic a `INSTALAR_Y_EJECUTAR_TODO_CMD.bat`** (o *Clic derecho $\rightarrow$ Ejecutar como administrador* si es la primera vez que se instala `arduino-cli` en esa PC).
 
 ---
 
