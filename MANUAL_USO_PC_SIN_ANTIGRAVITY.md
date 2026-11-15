@@ -20,14 +20,44 @@ git clone https://github.com/JK897933/Control-Difuso-Velocidad-Motor-DC-MATLAB-S
 
 ---
 
-## PARTE 2: Requisitos de Software en la PC
+## PARTE 2: Librerías Requeridas e Instalación Automática por CMD (`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`)
 
-1. **MATLAB** (cualquier versión reciente: R2021a a R2025b) con los módulos:
-   - **Simulink**
-   - **Fuzzy Logic Toolbox**
-   - **Control System Toolbox**
-   *(Para verificarlo en MATLAB, escribe `ver` en la ventana de comandos `Command Window`)*.
-2. **Arduino IDE** (versión 1.8.x o 2.x) para subir el programa `.ino` a la placa Arduino UNO.
+### 2.1 ¿Qué librerías o paquetes ocupa el proyecto?
+1. **En Arduino UNO:**
+   - Nuestro código [`Arduino_Control_Difuso_MotorDC.ino`](Arduino_Control_Difuso_MotorDC/Arduino_Control_Difuso_MotorDC.ino) fue programado con el motor de inferencia Mamdani y la interrupción del encoder integrados en C/C++ nativo (`<Arduino.h>`), por lo que **no depende de librerías externas raras que fallen al compilar**.
+   - Aun así, incluimos la instalación por CMD del núcleo oficial **`arduino:avr`** y las librerías **`Encoder`**, **`PID`** y **`QuickPID`**, además del binario ya precompilado (`.hex`) en [`Arduino_Control_Difuso_MotorDC/build/`](Arduino_Control_Difuso_MotorDC/build) listo para quemarse directo al Arduino UNO sin siquiera abrir Arduino IDE.
+2. **En MATLAB (R2021a – R2025b):**
+   - **Simulink** (para correr los 3 modelos `.slx`).
+   - **Fuzzy Logic Toolbox** (para el archivo `.fis` y el bloque *Fuzzy Logic Controller*).
+   - **Control System Toolbox** (para las funciones de transferencia `tf` y `c2d`).
+   - **Comunicación Serial con Arduino:** Usa la función nativa `serialport` de MATLAB (incluida de fábrica en MATLAB sin necesidad de instalar el *Support Package* pesado de gigabytes).
+
+### 2.2 Opción 1 (Automática con 1 Clic o por CMD): Ejecutar `INSTALAR_Y_EJECUTAR_TODO_CMD.bat`
+En la carpeta descargada encontrarás el archivo **`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`**. Al darle doble clic (o correrlo en `cmd`), hace todo esto solo:
+1. Instala **Arduino CLI** usando `winget`.
+2. Descarga e instala por línea de comandos el núcleo de **Arduino UNO (`arduino:avr`)** y las librerías (`Encoder`, `PID`, `QuickPID`).
+3. Compila el código `.ino` y, si detecta tu Arduino UNO conectado por USB, **le sube el programa automáticamente**.
+4. Abre **MATLAB** y ejecuta `iniciar_todo_matlab_arduino.m`, dejando abiertos los **3 modelos de Simulink** y las gráficas listas.
+
+### 2.3 Comandos Manuales en CMD (si prefieres pegarlos tú mismo en la terminal de Windows)
+Si estás en otra PC y quieres instalar las herramientas y subir el código al Arduino UNO desde `cmd` o `PowerShell`:
+
+```bat
+:: 1. Instalar Arduino CLI desde CMD con winget
+winget install -e --id ArduinoSA.CLI --accept-source-agreements --accept-package-agreements
+set "PATH=%PATH%;C:\Program Files\Arduino CLI"
+
+:: 2. Instalar el núcleo oficial de Arduino UNO y librerías por CMD
+arduino-cli core update-index
+arduino-cli core install arduino:avr
+arduino-cli lib install "Encoder" "PID" "QuickPID"
+
+:: 3. Compilar el programa del Control Difuso
+arduino-cli compile --fqbn arduino:avr:uno Arduino_Control_Difuso_MotorDC\Arduino_Control_Difuso_MotorDC.ino
+
+:: 4. Subir al Arduino UNO (cambia COM3 por el puerto donde aparezca tu Arduino en 'arduino-cli board list')
+arduino-cli upload -p COM3 --fqbn arduino:avr:uno Arduino_Control_Difuso_MotorDC\Arduino_Control_Difuso_MotorDC.ino
+```
 
 ---
 

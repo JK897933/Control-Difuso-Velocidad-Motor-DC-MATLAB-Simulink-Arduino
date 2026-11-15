@@ -14,13 +14,16 @@
 
 ## 1. Estructura del Repositorio
 
-1. **Sistema de Inferencia Difusa (`.fis`):** `ControlDifusoMotorDC.fis`
-2. **Simulink 1 (Motor Sin Control / Lazo Abierto):** `Simulink_1_Motor_Sin_Control.slx`
-3. **Simulink 2 (Motor Con Control Proporcional LGR Continuo y Discreto ZOH):** `Simulink_2_Motor_Con_Control.slx`
-4. **Simulink 3 (Control Difuso Mamdani + Planta del Motor + Interfaz Arduino):** `Simulink_3_Control_Difuso_Motor_Arduino.slx`
-5. **Script Maestro de MATLAB (Generador y Simulador):** `generar_proyecto_fuzzy_motor.m`
-6. **Script de Conexión en Vivo MATLAB $\leftrightarrow$ Arduino UNO:** `conectar_arduino_matlab_fuzzy.m`
-7. **Código para el Arduino UNO (`.ino`):** `Arduino_Control_Difuso_MotorDC/Arduino_Control_Difuso_MotorDC.ino`
+1. **Instalador y Lanzador de 1 Clic por CMD (`.bat`):** [`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`](INSTALAR_Y_EJECUTAR_TODO_CMD.bat) *(Instala `arduino-cli`, el núcleo `arduino:avr`, las librerías `Encoder`/`PID`/`QuickPID` por CMD, compila/sube el código al Arduino UNO y abre MATLAB con los 3 modelos de Simulink)*.
+2. **Lanzador Interactivo de MATLAB + Arduino:** [`iniciar_todo_matlab_arduino.m`](iniciar_todo_matlab_arduino.m)
+3. **Manual para cualquier PC sin Antigravity:** [`MANUAL_USO_PC_SIN_ANTIGRAVITY.md`](MANUAL_USO_PC_SIN_ANTIGRAVITY.md)
+4. **Sistema de Inferencia Difusa (`.fis`):** `ControlDifusoMotorDC.fis`
+5. **Simulink 1 (Motor Sin Control / Lazo Abierto):** `Simulink_1_Motor_Sin_Control.slx`
+6. **Simulink 2 (Motor Con Control Proporcional LGR Continuo y Discreto ZOH):** `Simulink_2_Motor_Con_Control.slx`
+7. **Simulink 3 (Control Difuso Mamdani + Planta del Motor + Interfaz Arduino):** `Simulink_3_Control_Difuso_Motor_Arduino.slx`
+8. **Script Maestro de MATLAB (Generador y Simulador):** `generar_proyecto_fuzzy_motor.m`
+9. **Script de Conexión en Vivo MATLAB $\leftrightarrow$ Arduino UNO:** `conectar_arduino_matlab_fuzzy.m`
+10. **Código para el Arduino UNO (`.ino`) y Binarios Precompilados (`.hex`):** `Arduino_Control_Difuso_MotorDC/Arduino_Control_Difuso_MotorDC.ino` y `Arduino_Control_Difuso_MotorDC/build/`
 
 ---
 
