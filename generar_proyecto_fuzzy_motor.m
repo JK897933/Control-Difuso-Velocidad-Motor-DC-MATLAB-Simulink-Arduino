@@ -370,6 +370,19 @@ save_system(mdl3, fullfile(outDir, [mdl3 '.slx']));
 close_system(mdl3);
 fprintf('Modelo 3 generado y simulado: %s.slx\n', mdl3);
 
+% Si se ejecuta en una versión posterior a R2023a, exportar los 3 modelos .slx a formato R2023a
+if ~verLessThan('matlab', '9.15') % > R2023a (9.14)
+    models_r2023a = {mdl1, mdl2, mdl3};
+    for km = 1:length(models_r2023a)
+        m_name = models_r2023a{km};
+        load_system(fullfile(outDir, [m_name '.slx']));
+        Simulink.exportToVersion(m_name, fullfile(outDir, [m_name '_R2023a.slx']), 'R2023a');
+        close_system(m_name, 0);
+        movefile(fullfile(outDir, [m_name '_R2023a.slx']), fullfile(outDir, [m_name '.slx']), 'f');
+    end
+    fprintf('Los 3 modelos .slx fueron guardados con compatibilidad nativa para MATLAB R2023a.\n');
+end
+
 %% 5. GENERAR GRÁFICAS DE LAS SIMULACIONES DE SIMULINK
 % Figura 3: Comparación Modelo 1 (Sin Control) vs Modelo 2 (Con Control Continuo y Discreto ZOH)
 f3 = figure('Position', [100 100 950 620], 'Color', 'w');

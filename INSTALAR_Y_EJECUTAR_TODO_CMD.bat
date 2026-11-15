@@ -41,9 +41,14 @@ for /f "tokens=1" %%p in ('arduino-cli board list ^| findstr /i "COM"') do (
 )
 
 echo.
-echo [PASO 4/4] Buscando MATLAB e iniciando las simulaciones de Fuzzy y los 3 modelos de Simulink...
+echo [PASO 4/4] Buscando MATLAB (priorizando R2023a) e iniciando los 3 modelos de Simulink...
 set "MATLAB_EXE="
-for /f "delims=" %%i in ('where matlab 2^>nul') do set "MATLAB_EXE=%%i"
+if exist "C:\Program Files\MATLAB\R2023a\bin\matlab.exe" (
+    set "MATLAB_EXE=C:\Program Files\MATLAB\R2023a\bin\matlab.exe"
+)
+if "%MATLAB_EXE%"=="" (
+    for /f "delims=" %%i in ('where matlab 2^>nul') do set "MATLAB_EXE=%%i"
+)
 if "%MATLAB_EXE%"=="" (
     for /d %%d in ("C:\Program Files\MATLAB\R*") do (
         if exist "%%d\bin\matlab.exe" set "MATLAB_EXE=%%d\bin\matlab.exe"

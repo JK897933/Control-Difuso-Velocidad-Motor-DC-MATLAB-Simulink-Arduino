@@ -23,9 +23,31 @@ for i = 1:length(req)
     end
 end
 
-% 2. Generar/Cargar el Sistema Difuso (.fis) y variables en el Workspace
-fprintf('\n[2/4] Cargando variables del motor y sistema difuso Mamdani (.fis)...\n');
-run('generar_proyecto_fuzzy_motor.m');
+% 2. Cargar el Sistema Difuso (.fis) y variables en el Workspace (Compatible con MATLAB R2023a)
+fprintf('\n[2/4] Cargando variables del motor y sistema difuso Mamdani (.fis) para MATLAB R2023a...\n');
+num_Gp = 24;
+den_Gp = [1 11 24];
+Gp = tf(num_Gp, den_Gp);
+K_lgr = 5.0629;
+T_sample = 0.04;
+Gp_z = c2d(Gp, T_sample, 'zoh');
+
+if exist('ControlDifusoMotorDC.fis', 'file')
+    fis = readfis('ControlDifusoMotorDC.fis');
+    assignin('base', 'fis', fis);
+    assignin('base', 'num_Gp', num_Gp);
+    assignin('base', 'den_Gp', den_Gp);
+    assignin('base', 'K_lgr', K_lgr);
+    assignin('base', 'T_sample', T_sample);
+    pot_test = [0; 150; 300; 450; 600; 700; 1023];
+    pwm_matlab = evalfis(fis, pot_test);
+    fprintf('  [OK] ControlDifusoMotorDC.fis cargado en Workspace.\n');
+    for i = 1:length(pot_test)
+        fprintf('       Pot = %4d  -->  PWM MATLAB = %6.2f\n', pot_test(i), pwm_matlab(i));
+    end
+else
+    run('generar_proyecto_fuzzy_motor.m');
+end
 
 % 3. Abrir los 3 Modelos de Simulink para que queden visibles en pantalla
 fprintf('\n[3/4] Abriendo los 3 modelos de Simulink en pantalla...\n');
