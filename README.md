@@ -12,18 +12,36 @@
 
 ---
 
-## 1. Estructura del Repositorio y Dónde Colocar los Archivos para que el `.bat` Funcione
+## 1. Selección de Tarjeta Microcontroladora (Separado por Carpeta: Arduino UNO 5V vs ESP32 DevKit 3.3V)
 
-1. **Instalador y Lanzador de 1 Clic por CMD (`.bat`):** [`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`](INSTALAR_Y_EJECUTAR_TODO_CMD.bat) *(Instala `arduino-cli`, el núcleo `arduino:avr`, las librerías `Encoder`/`PID`/`QuickPID` por CMD, compila/sube el código al Arduino UNO y abre MATLAB R2023a con los 3 modelos de Simulink)*.
-2. **Lanzador Interactivo de MATLAB + Arduino:** [`iniciar_todo_matlab_arduino.m`](iniciar_todo_matlab_arduino.m)
-3. **Manual para cualquier PC sin Antigravity:** [`MANUAL_USO_PC_SIN_ANTIGRAVITY.md`](MANUAL_USO_PC_SIN_ANTIGRAVITY.md)
-4. **Sistema de Inferencia Difusa (`.fis`):** `ControlDifusoMotorDC.fis`
-5. **Simulink 1 (Motor Sin Control / Lazo Abierto - Compatible R2023a):** `Simulink_1_Motor_Sin_Control.slx`
-6. **Simulink 2 (Motor Con Control Proporcional LGR Continuo y Discreto ZOH - Compatible R2023a):** `Simulink_2_Motor_Con_Control.slx`
-7. **Simulink 3 (Control Difuso Mamdani + Planta del Motor + Interfaz Arduino - Compatible R2023a):** `Simulink_3_Control_Difuso_Motor_Arduino.slx`
-8. **Script Maestro de MATLAB (Generador y Simulador):** `generar_proyecto_fuzzy_motor.m`
-9. **Script de Conexión en Vivo MATLAB $\leftrightarrow$ Arduino UNO:** `conectar_arduino_matlab_fuzzy.m`
-10. **Código para el Arduino UNO (`.ino`) y Binarios Precompilados (`.hex`):** `Arduino_Control_Difuso_MotorDC/Arduino_Control_Difuso_MotorDC.ino` y `Arduino_Control_Difuso_MotorDC/build/`
+Para cumplir con las dos opciones del laboratorio (**"Arduino UNO o ESP32 DevKit"**), el repositorio está **separado claramente por tarjeta** sin borrar ningún archivo común:
+
+| Tarjeta Microcontroladora | Carpeta Exclusiva en el Repositorio | Voltaje Lógico y Alimentación de Pot/Encoder | Escala ADC (Potenciómetro) | Pin Pot (ADC) | Pines Encoder (Fase A / B) | Pines Puente H (`ENA`, `IN1`, `IN2`) | Instalador Automático por CMD (`.bat`) | Manual Exclusivo |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- | :--- |
+| **TARJETA 1: Arduino UNO (`5V`)** | [`1_Tarjeta_Arduino_UNO_5V/`](1_Tarjeta_Arduino_UNO_5V/) *(y raíz)* | **$5.0\text{ V}$** (Pin `5V`) | **10 bits** (`0` a `1023` directo) | Pin **`A0`** | Pin **`2`** y Pin **`3`** (+ Pull-up $47\text{ k}\Omega$ a `5V`) | Pin **`~9`**, **`7`**, **`8`** | [`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`](INSTALAR_Y_EJECUTAR_TODO_CMD.bat) | [`MANUAL_ARDUINO_UNO_5V.md`](1_Tarjeta_Arduino_UNO_5V/MANUAL_ARDUINO_UNO_5V.md) |
+| **TARJETA 2: ESP32 DevKit V1 (`3.3V`)** | [`2_Tarjeta_ESP32_DevKit_3V3/`](2_Tarjeta_ESP32_DevKit_3V3/) | **$3.3\text{ V}$** (Pin `3V3` - **¡No usar 5V!**) | **12 bits** (`0` a `4095` escalado a `0–1023`) | **`GPIO 34`** (`D34`) | **`GPIO 18`** y **`GPIO 19`** (+ Pull-up $47\text{ k}\Omega$ a `3V3`) | **`GPIO 25`**, **`26`**, **`27`** | [`2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat`](2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat) | [`MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md) |
+
+---
+
+## 1.1 Estructura Completa del Repositorio y Dónde Colocar los Archivos para que el `.bat` Funcione
+
+1. **Archivos Comunes de MATLAB R2023a y Simulink (Sirven para ambas tarjetas):**
+   - **Sistema de Inferencia Difusa (`.fis`):** `ControlDifusoMotorDC.fis`
+   - **Simulink 1 (Motor Sin Control / Lazo Abierto - Compatible R2023a):** `Simulink_1_Motor_Sin_Control.slx`
+   - **Simulink 2 (Motor Con Control Proporcional LGR Continuo y Discreto ZOH - Compatible R2023a):** `Simulink_2_Motor_Con_Control.slx`
+   - **Simulink 3 (Control Difuso Mamdani + Planta del Motor - Compatible R2023a):** `Simulink_3_Control_Difuso_Motor_Arduino.slx`
+   - **Script Maestro de MATLAB (Generador y Simulador):** `generar_proyecto_fuzzy_motor.m`
+2. **Carpeta Separada para TARJETA 1 — Arduino UNO (Lógica 5V):** [`1_Tarjeta_Arduino_UNO_5V/`](1_Tarjeta_Arduino_UNO_5V/)
+   - Firmware `.ino` y `.hex` precompilado: `Arduino_Control_Difuso_MotorDC/Arduino_Control_Difuso_MotorDC.ino`
+   - Script en vivo MATLAB $\leftrightarrow$ Arduino UNO: `conectar_arduino_matlab_fuzzy.m`
+   - Lanzador automático `.bat`: `INSTALAR_Y_EJECUTAR_ARDUINO_UNO_CMD.bat` (también en la raíz como `INSTALAR_Y_EJECUTAR_TODO_CMD.bat`)
+   - Manual exclusivo Arduino UNO 5V: [`1_Tarjeta_Arduino_UNO_5V/MANUAL_ARDUINO_UNO_5V.md`](1_Tarjeta_Arduino_UNO_5V/MANUAL_ARDUINO_UNO_5V.md)
+3. **Carpeta Separada para TARJETA 2 — ESP32 DevKit V1 (Lógica 3.3V):** [`2_Tarjeta_ESP32_DevKit_3V3/`](2_Tarjeta_ESP32_DevKit_3V3/)
+   - Firmware exclusivo ESP32 3.3V (con conversión ADC 12 bits `0–4095` a `0–1023`): [`2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino`](2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino)
+   - Script en vivo MATLAB $\leftrightarrow$ ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/conectar_esp32_matlab_fuzzy.m`](2_Tarjeta_ESP32_DevKit_3V3/conectar_esp32_matlab_fuzzy.m)
+   - Lanzador MATLAB para ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/iniciar_todo_matlab_esp32.m`](2_Tarjeta_ESP32_DevKit_3V3/iniciar_todo_matlab_esp32.m)
+   - Instalador y compilador por CMD para ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat`](2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat)
+   - Manual exclusivo ESP32 DevKit 3.3V: [`2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md)
 
 ### ¿Dónde tengo que poner las cosas para que `INSTALAR_Y_EJECUTAR_TODO_CMD.bat` jale todo?
 
@@ -86,13 +104,32 @@ El archivo `INSTALAR_Y_EJECUTAR_TODO_CMD.bat` utiliza rutas automáticas relativ
 | **`GND` (Bornera central del Puente H)** | **Terminal Negativa (`-`) de la Fuente de 12 V** **Y TAMBIÉN** a un pin **`GND` del Arduino UNO** | **¡Indispensable!** Tierra común entre fuente de potencia y microcontrolador. |
 | **`Jumper del Regulador`** | Dejar puesto el jumper central | Si alimentas el Arduino por cable USB desde la PC para usar MATLAB/Simulink, **NO conectes** la bornera `5v de Salida` del Puente H al pin `5V` del Arduino. |
 
-#### C) Conexión del Potenciómetro de $10\text{ k}\Omega$ (Referencia de Velocidad)
+#### C) Conexión del Potenciómetro de $10\text{ k}\Omega$ (Referencia de Velocidad) — Para TARJETA 1: Arduino UNO (`5V`)
 
-| Pin del Potenciómetro ($10\text{ k}\Omega$) | ¿A dónde se conecta en el Arduino UNO? | Función |
+| Pin del Potenciómetro ($10\text{ k}\Omega$) | ¿A dónde se conecta en el Arduino UNO (`5V`)? | Función |
 | :--- | :--- | :--- |
-| **Pin Extremo Izquierdo (Terminal 1)** | **`GND`** (Tierra común en Protoboard) | Referencia mínima ($0\text{ V} \rightarrow \text{ADC} = 0$). |
+| **Pin Extremo Izquierdo (Terminal 1)** | **`GND`** (Tierra común en Protoboard) | Referencia mínima ($0\text{ V} \rightarrow \text{ADC}_{10\text{b}} = 0$). |
 | **Pin Central (Cursor / Wiper)** | **Pin Analógico `A0`** del Arduino UNO | Señal de entrada al Controlador Difuso (`Pot`: `0` a `1023`). |
-| **Pin Extremo Derecho (Terminal 3)** | **`5V`** del Arduino UNO | Referencia máxima ($5\text{ V} \rightarrow \text{ADC} = 1023$). |
+| **Pin Extremo Derecho (Terminal 3)** | **`5V`** del Arduino UNO | Referencia máxima ($5\text{ V} \rightarrow \text{ADC}_{10\text{b}} = 1023$). |
+
+---
+
+### 2.3 Conexión Física Exclusiva para TARJETA 2: ESP32 DevKit V1 (Lógica de $3.3\text{ V}$)
+*(Ver manual completo en [`2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md))*
+
+> **¡IMPORTANTE PARA ESP32 (3.3V)!** Los pines del ESP32 trabajan a **$3.3\text{ V}$** (no toleran $5\text{ V}$). Por lo tanto, el **Potenciómetro**, el **Cable Azul del Encoder (`3.3V/5V Encoder +`)** y la **Resistencia Pull-Up de $47\text{ k}\Omega$** se conectan al pin **`3V3` ($3.3\text{ V}$) del ESP32**. Además, el ADC del ESP32 es de **12 bits (`0` a `4095` para `0–3.3 V`)**, y el firmware [`ESP32_Control_Difuso_MotorDC.ino`](2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino) lo escala automáticamente a `0–1023`.
+
+| Componente / Cable | Pin en TARJETA 2: ESP32 DevKit V1 (`3.3V`) | Notas de Adaptación a $3.3\text{ V}$ |
+| :--- | :--- | :--- |
+| **Potenciómetro Pin Central (Cursor)** | **`GPIO 34` (`D34` / `ADC1_CH6`)** | Entrada analógica de 12 bits (`0–4095` a $3.3\text{ V}$ $\rightarrow$ escalado a `0–1023`). |
+| **Potenciómetro Extremos (Pin 1 y Pin 3)** | **`GND`** y **`3V3` ($3.3\text{ V}$)** | **¡Conectar extremo positivo a `3V3`, nunca a `5V`!** |
+| **Motor Cable Amarillo (`Fase A Encoder`)** | **`GPIO 18` (`D18`)** | Con **Resistencia Pull-Up de $47\text{ k}\Omega$ hacia `3V3` ($3.3\text{ V}$)**. |
+| **Motor Cable Verde (`Fase B Encoder`)** | **`GPIO 19` (`D19`)** | Entrada digital de cuadratura a $3.3\text{ V}$. |
+| **Motor Cable Azul (`3.3V/5V Encoder +`)** | **`3V3` ($3.3\text{ V}$)** del ESP32 | Alimenta el encoder a $3.3\text{ V}$ para que entregue pulsos seguros de $3.3\text{ V}$. |
+| **Motor Cable Negro (`GND Encoder`)** | **`GND`** del ESP32 | Tierra común. |
+| **Puente H Pin `ENA` (Sin jumper)** | **`GPIO 25` (`D25`)** | Salida PWM de 8 bits (`0–255`) generada por el ESP32. |
+| **Puente H Pines `IN1` e `IN2`** | **`GPIO 26` (`D26`)** y **`GPIO 27` (`D27`)** | Control de dirección (`IN1 = HIGH`, `IN2 = LOW`). |
+| **Puente H Bornera `GND`** | **`GND` de Fuente 12V + `GND` del ESP32** | Tierra común obligatoria entre Fuente 12V, Puente H y ESP32. |
 
 ---
 
