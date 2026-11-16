@@ -19,7 +19,7 @@ Para cumplir con las dos opciones del laboratorio (**"Arduino UNO o ESP32 DevKit
 | Tarjeta Microcontroladora | Carpeta Exclusiva en el Repositorio | Voltaje Lógico y Alimentación de Pot/Encoder | Escala ADC (Potenciómetro) | Pin Pot (ADC) | Pines Encoder (Fase A / B) | Pines Puente H (`ENA`, `IN1`, `IN2`) | Instalador Automático por CMD (`.bat`) | Manual Exclusivo |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- | :--- |
 | **TARJETA 1: Arduino UNO (`5V`)** | [`1_Tarjeta_Arduino_UNO_5V/`](1_Tarjeta_Arduino_UNO_5V/) *(y raíz)* | **$5.0\text{ V}$** (Pin `5V`) | **10 bits** (`0` a `1023` directo) | Pin **`A0`** | Pin **`2`** y Pin **`3`** (+ Pull-up $47\text{ k}\Omega$ a `5V`) | Pin **`~9`**, **`7`**, **`8`** | [`INSTALAR_Y_EJECUTAR_TODO_CMD.bat`](INSTALAR_Y_EJECUTAR_TODO_CMD.bat) | [`MANUAL_ARDUINO_UNO_5V.md`](1_Tarjeta_Arduino_UNO_5V/MANUAL_ARDUINO_UNO_5V.md) |
-| **TARJETA 2: ESP32 DevKit V1 (`3.3V`)** | [`2_Tarjeta_ESP32_DevKit_3V3/`](2_Tarjeta_ESP32_DevKit_3V3/) | **$3.3\text{ V}$** (Pin `3V3` - **¡No usar 5V!**) | **12 bits** (`0` a `4095` escalado a `0–1023`) | **`GPIO 34`** (`D34`) | **`GPIO 18`** y **`GPIO 19`** (+ Pull-up $47\text{ k}\Omega$ a `3V3`) | **`GPIO 25`**, **`26`**, **`27`** | [`2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat`](2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat) | [`MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md) |
+| **TARJETA 2: ESP32 DevKit V1 (`3.3V` - ESP-IDF)** | [`2_Tarjeta_ESP32_DevKit_3V3/`](2_Tarjeta_ESP32_DevKit_3V3/) | **$3.3\text{ V}$** (Pin `3V3` - **¡No usar 5V!**) | **12 bits** (`0` a `4095` escalado a `0–1023`) | **`GPIO 34`** (`ADC1_CH6`) | **`GPIO 18`** y **`GPIO 19`** (+ Pull-up $47\text{ k}\Omega$ a `3V3`) | **`GPIO 25`** (`LEDC PWM`), **`26`**, **`27`** | [`COMPILAR_Y_FLASHEAR_ESP_IDF.bat`](2_Tarjeta_ESP32_DevKit_3V3/COMPILAR_Y_FLASHEAR_ESP_IDF.bat) | [`MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md) |
 
 ---
 
@@ -36,12 +36,13 @@ Para cumplir con las dos opciones del laboratorio (**"Arduino UNO o ESP32 DevKit
    - Script en vivo MATLAB $\leftrightarrow$ Arduino UNO: `conectar_arduino_matlab_fuzzy.m`
    - Lanzador automático `.bat`: `INSTALAR_Y_EJECUTAR_ARDUINO_UNO_CMD.bat` (también en la raíz como `INSTALAR_Y_EJECUTAR_TODO_CMD.bat`)
    - Manual exclusivo Arduino UNO 5V: [`1_Tarjeta_Arduino_UNO_5V/MANUAL_ARDUINO_UNO_5V.md`](1_Tarjeta_Arduino_UNO_5V/MANUAL_ARDUINO_UNO_5V.md)
-3. **Carpeta Separada para TARJETA 2 — ESP32 DevKit V1 (Lógica 3.3V):** [`2_Tarjeta_ESP32_DevKit_3V3/`](2_Tarjeta_ESP32_DevKit_3V3/)
-   - Firmware exclusivo ESP32 3.3V (con conversión ADC 12 bits `0–4095` a `0–1023`): [`2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino`](2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino)
+3. **Carpeta Separada para TARJETA 2 — ESP32 DevKit V1 (Lógica 3.3V en ESP-IDF C Nativo + FreeRTOS):** [`2_Tarjeta_ESP32_DevKit_3V3/`](2_Tarjeta_ESP32_DevKit_3V3/)
+   - **Proyecto Oficial ESP-IDF (`CMakeLists.txt` + `main/main.c`):** [`2_Tarjeta_ESP32_DevKit_3V3/ESP32_ESP_IDF_Control_Difuso/`](2_Tarjeta_ESP32_DevKit_3V3/ESP32_ESP_IDF_Control_Difuso/) *(Usa periféricos nativos de ESP-IDF: `ADC1_CHANNEL_6` 12 bits a 3.3V escalado a `0–1023`, `driver/ledc.h` PWM de 8 bits a 5 kHz en `GPIO 25`, `gpio_isr_handler_add` en `IRAM_ATTR` para el encoder en `GPIO 18/19`, y tarea periódica de FreeRTOS `vTaskDelayUntil` cada $T = 40\text{ ms}$)*.
+   - **Compilador y Flasher automático para ESP-IDF (`.bat`):** [`2_Tarjeta_ESP32_DevKit_3V3/COMPILAR_Y_FLASHEAR_ESP_IDF.bat`](2_Tarjeta_ESP32_DevKit_3V3/COMPILAR_Y_FLASHEAR_ESP_IDF.bat)
+   - Firmware alternativo `.ino` (también conservado sin borrar): [`2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino`](2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino)
    - Script en vivo MATLAB $\leftrightarrow$ ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/conectar_esp32_matlab_fuzzy.m`](2_Tarjeta_ESP32_DevKit_3V3/conectar_esp32_matlab_fuzzy.m)
-   - Lanzador MATLAB para ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/iniciar_todo_matlab_esp32.m`](2_Tarjeta_ESP32_DevKit_3V3/iniciar_todo_matlab_esp32.m)
-   - Instalador y compilador por CMD para ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat`](2_Tarjeta_ESP32_DevKit_3V3/INSTALAR_Y_EJECUTAR_ESP32_CMD.bat)
-   - Manual exclusivo ESP32 DevKit 3.3V: [`2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md)
+   - Lanzador MATLAB R2023a para ESP32: [`2_Tarjeta_ESP32_DevKit_3V3/iniciar_todo_matlab_esp32.m`](2_Tarjeta_ESP32_DevKit_3V3/iniciar_todo_matlab_esp32.m)
+   - Manual exclusivo ESP32 DevKit 3.3V (ESP-IDF): [`2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md`](2_Tarjeta_ESP32_DevKit_3V3/MANUAL_ESP32_DEVKIT_3V3.md)
 
 ### ¿Dónde tengo que poner las cosas para que `INSTALAR_Y_EJECUTAR_TODO_CMD.bat` jale todo?
 

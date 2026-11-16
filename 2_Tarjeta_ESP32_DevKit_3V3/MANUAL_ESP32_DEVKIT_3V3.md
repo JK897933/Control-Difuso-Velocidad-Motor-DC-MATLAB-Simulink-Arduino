@@ -70,19 +70,39 @@ Este directorio (`2_Tarjeta_ESP32_DevKit_3V3/`) contiene todo el código, adapta
 
 ---
 
-## 4. Cómo Instalar Librerías de ESP32 y Ejecutar en Cualquier PC
+## 4. Cómo Compilar y Flashear en ESP-IDF (Oficial Espressif C Nativo + FreeRTOS)
 
-1. Entra a la subcarpeta **`2_Tarjeta_ESP32_DevKit_3V3/`**.
-2. Dale **doble clic a [`INSTALAR_Y_EJECUTAR_ESP32_CMD.bat`](INSTALAR_Y_EJECUTAR_ESP32_CMD.bat)**:
-   - Instala `arduino-cli` y el paquete oficial de Espressif (`esp32:esp32`) por CMD.
-   - Compila `ESP32_Control_Difuso_MotorDC.ino` y lo sube al ESP32 conectado por USB.
-   - Abre **MATLAB R2023a** con los 3 modelos de Simulink listos.
-3. Si prefieres subirlo manualmente desde **Arduino IDE**:
-   - Abre `2_Tarjeta_ESP32_DevKit_3V3/ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino`.
-   - En `Herramientas -> Placa`, selecciona **`ESP32 Dev Module`** (o `DOIT ESP32 DEVKIT V1`).
-   - Sube el programa y luego en MATLAB ejecuta:
-     ```matlab
-     cd 2_Tarjeta_ESP32_DevKit_3V3
-     iniciar_todo_matlab_esp32
-     conectar_esp32_matlab_fuzzy
-     ```
+Dentro de esta carpeta tienes el proyecto completo de **ESP-IDF** en:
+- **`2_Tarjeta_ESP32_DevKit_3V3/ESP32_ESP_IDF_Control_Difuso/`**
+  - [`CMakeLists.txt`](ESP32_ESP_IDF_Control_Difuso/CMakeLists.txt)
+  - [`main/CMakeLists.txt`](ESP32_ESP_IDF_Control_Difuso/main/CMakeLists.txt)
+  - [`main/main.c`](ESP32_ESP_IDF_Control_Difuso/main/main.c) — Programado con las APIs nativas de **ESP-IDF** (`driver/ledc.h`, `driver/gpio.h`, `driver/uart.h`, `esp_adc/adc_oneshot.h` / `driver/adc.h`, `esp_timer.h` y tarea periódica de FreeRTOS `vTaskDelayUntil` cada $T = 40\text{ ms}$).
+
+### Opción A: Con 1 clic usando `COMPILAR_Y_FLASHEAR_ESP_IDF.bat`
+1. Dale doble clic a **[`COMPILAR_Y_FLASHEAR_ESP_IDF.bat`](COMPILAR_Y_FLASHEAR_ESP_IDF.bat)**.
+2. El script localiza automáticamente tu instalación de `C:\Espressif\frameworks\esp-idf-*`, activa `export.bat`, compila `main/main.c` con `idf.py build`, flashea tu ESP32 con `idf.py flash` y abre **MATLAB R2023a**.
+
+### Opción B: Desde la terminal **ESP-IDF CMD / PowerShell** o **VS Code ESP-IDF Extension**
+1. Abre tu terminal **ESP-IDF 5.x / 4.x CMD** (o abre la carpeta `2_Tarjeta_ESP32_DevKit_3V3/ESP32_ESP_IDF_Control_Difuso` en VS Code con la extensión oficial de Espressif IDF).
+2. Ejecuta los comandos estándar de ESP-IDF:
+   ```bash
+   cd 2_Tarjeta_ESP32_DevKit_3V3\ESP32_ESP_IDF_Control_Difuso
+   idf.py set-target esp32
+   idf.py build
+   idf.py -p COM3 flash
+   ```
+   *(Cambia `COM3` por el puerto COM donde aparezca tu ESP32 DevKit).*
+3. Si quieres ver los datos primero en la consola de ESP-IDF (`idf.py -p COM3 monitor`), verás cada $40\text{ ms}$:
+   ```text
+   600,151.37,151,83.03,8.69,2402
+   ```
+   *(Presiona `Ctrl + ]` para salir del monitor de ESP-IDF y liberar el puerto COM antes de abrir MATLAB).*
+4. En **MATLAB R2023a**, corre:
+   ```matlab
+   cd 2_Tarjeta_ESP32_DevKit_3V3
+   iniciar_todo_matlab_esp32
+   conectar_esp32_matlab_fuzzy
+   ```
+
+### Opción C: Alternativa con Arduino CLI / Arduino IDE (también conservada sin borrar)
+Si en alguna PC no tienen instalado el entorno completo de ESP-IDF, también se dejó conservada la carpeta [`ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino`](ESP32_Control_Difuso_MotorDC/ESP32_Control_Difuso_MotorDC.ino) y el script [`INSTALAR_Y_EJECUTAR_ESP32_CMD.bat`](INSTALAR_Y_EJECUTAR_ESP32_CMD.bat).
