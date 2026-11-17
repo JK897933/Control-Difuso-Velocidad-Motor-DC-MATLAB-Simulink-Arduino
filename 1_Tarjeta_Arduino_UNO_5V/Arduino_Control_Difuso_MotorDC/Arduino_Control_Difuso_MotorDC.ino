@@ -162,7 +162,9 @@ void loop() {
     rpmMedidas = (abs(pulsos) / PULSOS_POR_VUELTA) * (60.0 / dt);
     omegaRadS  = rpmMedidas * (2.0 * PI / 60.0);
 
-    // 3. Leer Potenciómetro (0 - 1023)
+    // 3. Leer Potenciómetro (0 - 1023) - doble lectura para estabilizar potenciómetro de 100 kOhm
+    analogRead(PIN_POT);
+    delayMicroseconds(150);
     lecturaPot = analogRead(PIN_POT);
 
     // 4. Calcular salida del Controlador Difuso Mamdani (0 - 255)
