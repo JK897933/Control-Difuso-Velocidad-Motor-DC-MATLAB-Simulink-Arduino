@@ -33,13 +33,14 @@ function Get-PuertosUSB {
         Where-Object { $_.Name -match "\((COM\d+)\)" -and $_.DeviceID -notmatch "^BTHENUM" } |
         ForEach-Object {
             $null = $_.Name -match "\((COM\d+)\)"
+            $com = $Matches[1]
             $tipo = "Desconocido"
             if ($_.Name -match "Arduino")            { $tipo = "Arduino UNO (original)" }
             elseif ($_.Name -match "CH340|CH341")    { $tipo = "Clon Arduino UNO / ESP32 (CH340)" }
             elseif ($_.Name -match "CP210")          { $tipo = "ESP32 DevKit (CP210x)" }
             elseif ($_.Name -match "FTDI|FT232")     { $tipo = "FTDI USB-Serial" }
             elseif ($_.DeviceID -match "VID_2341|VID_2A03") { $tipo = "Arduino UNO (original)" }
-            [PSCustomObject]@{ Puerto = $Matches[1]; Tipo = $tipo; Nombre = $_.Name; Estado = $_.Status }
+            [PSCustomObject]@{ Puerto = $com; Tipo = $tipo; Nombre = $_.Name; Estado = $_.Status }
         }
 }
 
