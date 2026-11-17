@@ -51,8 +51,13 @@ fprintf('%-10s | %-12s | %-12s | %-12s\n', 'Pot (ADC)', 'PWM MATLAB', 'PWM Ardui
 fprintf('-------------------------------------------------------------\n');
 
 t0 = tic;
+lastSentPWM = -1;
 while ishandle(fig)
     if arduinoObj.NumBytesAvailable > 0
+        % Descartar tramas viejas acumuladas para evitar retraso ("reacciona tarde")
+        while arduinoObj.NumBytesAvailable > 80
+            readline(arduinoObj);
+        end
         linea = readline(arduinoObj);
         datos = str2double(split(linea, ","));
         if numel(datos) == 5 && all(~isnan(datos))
@@ -64,8 +69,11 @@ while ishandle(fig)
 
             % Evaluar el controlador difuso directamente en MATLAB y enviarlo al Arduino
             pwm_matlab_live = evalfis(fis, pot_val);
-            cmdPWM = sprintf('P%d\n', round(pwm_matlab_live));
-            writeline(arduinoObj, cmdPWM);
+            pwm_int = round(pwm_matlab_live);
+            if pwm_int ~= lastSentPWM
+                writeline(arduinoObj, sprintf('P%d', pwm_int));
+                lastSentPWM = pwm_int;
+            end
 
             t_actual = toc(t0);
             addpoints(hPot, t_actual, pot_val);
@@ -74,9 +82,13 @@ while ishandle(fig)
             drawnow limitrate;
 
             fprintf('%-10d | %-12.2f | %-12d | %-12.2f\n', ...
-                pot_val, pwm_matlab_live, round(pwm_matlab_live), rpm_val);
+                pot_val, pwm_matlab_live, pwm_int, rpm_val);
         end
     end
 end
 
+try
+    writeline(arduinoObj, 'A'); % Devolver control autónomo al Arduino al cerrar
+catch
+end
 clear arduinoObj;

@@ -116,6 +116,7 @@ float evaluarControlDifusoMamdani(float pot) {
 
 void setup() {
   Serial.begin(115200);
+  Serial.setTimeout(10);
 
   // Configurar pines del Puente H
   pinMode(PIN_ENA, OUTPUT);
