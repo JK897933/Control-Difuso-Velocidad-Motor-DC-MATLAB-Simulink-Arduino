@@ -9,12 +9,18 @@ clear; clc;
 % 1. Cargar el archivo .fis generado
 fis = readfis('ControlDifusoMotorDC.fis');
 
-% 2. Detectar o configurar el puerto COM del Arduino UNO
+% 2. Detectar automáticamente el puerto COM USB real del Arduino UNO (ignorando puertos Bluetooth)
 puertosDisponibles = serialportlist("available");
 if isempty(puertosDisponibles)
     error('No se detectó ningún Arduino conectado por USB. Conecta el Arduino UNO y verifica el puerto COM.');
 end
-puertoCOM = puertosDisponibles(1); % O especifica manualmente ej. "COM3"
+puertoCOM = "";
+[stPS, outPS] = system('powershell -NoProfile -Command "Get-CimInstance Win32_PnPEntity | Where-Object { $_.Name -match ''\((COM\d+)\)'' -and $_.DeviceID -notmatch ''^BTHENUM'' } | ForEach-Object { if ($_.Name -match ''\((COM\d+)\)'') { $Matches[1] } } | Select-Object -First 1"');
+if stPS == 0 && ~isempty(strtrim(outPS))
+    puertoCOM = string(strtrim(outPS));
+else
+    puertoCOM = puertosDisponibles(end);
+end
 fprintf('Conectando a Arduino UNO en %s a 115200 baudios...\n', puertoCOM);
 
 arduinoObj = serialport(puertoCOM, 115200);

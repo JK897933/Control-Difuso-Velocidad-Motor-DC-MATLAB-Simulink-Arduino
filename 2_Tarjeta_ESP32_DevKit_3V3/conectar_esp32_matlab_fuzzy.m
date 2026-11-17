@@ -16,12 +16,18 @@ else
     error('No se encontró ControlDifusoMotorDC.fis');
 end
 
-% 2. Detectar el puerto COM del ESP32 DevKit (CP210x / CH340)
+% 2. Detectar automáticamente el puerto COM USB real del ESP32 DevKit (ignorando Bluetooth)
 puertosDisponibles = serialportlist("available");
 if isempty(puertosDisponibles)
     error('No se detectó ningún ESP32 conectado por USB. Conecta el ESP32 DevKit y verifica el driver CP210x/CH340.');
 end
-puertoCOM = puertosDisponibles(1); % O especifica manualmente ej. "COM4"
+puertoCOM = "";
+[stPS, outPS] = system('powershell -NoProfile -Command "Get-CimInstance Win32_PnPEntity | Where-Object { $_.Name -match ''\((COM\d+)\)'' -and $_.DeviceID -notmatch ''^BTHENUM'' } | ForEach-Object { if ($_.Name -match ''\((COM\d+)\)'') { $Matches[1] } } | Select-Object -First 1"');
+if stPS == 0 && ~isempty(strtrim(outPS))
+    puertoCOM = string(strtrim(outPS));
+else
+    puertoCOM = puertosDisponibles(end);
+end
 fprintf('Conectando a ESP32 DevKit (3.3V) en %s a 115200 baudios...\n', puertoCOM);
 
 esp32Obj = serialport(puertoCOM, 115200);

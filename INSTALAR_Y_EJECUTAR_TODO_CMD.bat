@@ -35,7 +35,7 @@ arduino-cli compile --fqbn arduino:avr:uno --output-dir "%~dp0Arduino_Control_Di
 
 echo.
 echo [Detectando si hay un Arduino UNO conectado por USB para subir el programa automaticamente...]
-for /f "tokens=1" %%p in ('arduino-cli board list ^| findstr /i "COM"') do (
+for /f "tokens=1" %%p in ('arduino-cli board list ^| findstr /i "USB"') do (
     echo   - Arduino detectado en el puerto %%p. Subiendo firmware...
     arduino-cli upload -p %%p --fqbn arduino:avr:uno --input-dir "%~dp0Arduino_Control_Difuso_MotorDC\build"
 )

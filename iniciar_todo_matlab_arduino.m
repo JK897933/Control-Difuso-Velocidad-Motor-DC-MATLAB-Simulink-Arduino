@@ -64,16 +64,21 @@ if isempty(puertos)
     fprintf('       conectar_arduino_matlab_fuzzy\n');
 else
     fprintf('  -> Puertos serie detectados: %s\n', join(puertos, ", "));
-    % Si existe arduino-cli instalado, ofrecer quemar el .hex automáticamente
+    puertoUSB = puertos(end);
+    [stPS, outPS] = system('powershell -NoProfile -Command "Get-CimInstance Win32_PnPEntity | Where-Object { $_.Name -match ''\((COM\d+)\)'' -and $_.DeviceID -notmatch ''^BTHENUM'' } | ForEach-Object { if ($_.Name -match ''\((COM\d+)\)'') { $Matches[1] } } | Select-Object -First 1"');
+    if stPS == 0 && ~isempty(strtrim(outPS))
+        puertoUSB = string(strtrim(outPS));
+    end
+    % Si existe arduino-cli instalado, subir el .hex automáticamente al puerto USB real
     [statusCli, ~] = system('where arduino-cli >nul 2>nul');
     if statusCli ~= 0 && exist('C:\Program Files\Arduino CLI\arduino-cli.exe', 'file')
         setenv('PATH', [getenv('PATH') ';C:\Program Files\Arduino CLI']);
         statusCli = 0;
     end
     if statusCli == 0 && exist(fullfile(pwd, 'Arduino_Control_Difuso_MotorDC', 'build'), 'dir')
-        fprintf('  -> Subiendo firmware precompilado al Arduino UNO en %s...\n', puertos(1));
+        fprintf('  -> Subiendo firmware precompilado al Arduino UNO en %s...\n', puertoUSB);
         cmdUpload = sprintf('arduino-cli upload -p %s --fqbn arduino:avr:uno --input-dir "%s"', ...
-            puertos(1), fullfile(pwd, 'Arduino_Control_Difuso_MotorDC', 'build'));
+            puertoUSB, fullfile(pwd, 'Arduino_Control_Difuso_MotorDC', 'build'));
         system(cmdUpload);
     end
     fprintf('  -> Para iniciar el control difuso en tiempo real con el motor físico, escribe:\n');
